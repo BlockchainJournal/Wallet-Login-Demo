@@ -1,21 +1,10 @@
 let loginToken = '';
 let profile = {};
 
-function setLoginToken(token) {
-    loginToken = token;
-}
-
-function getLoginToken() {
-    return loginToken
-}
-
-function setProfile(profile) {
-    profile = profile;
-}
-
-function getProfile() {
-    return profile
-}
+const setLoginToken = (token) => {loginToken = token;}
+const getLoginToken = () => {return loginToken}
+const setProfile = (profile) => {profile = profile;}
+const getProfile = () => {return profile;}
 
 // Function to initiate the MetaMask login process
 async function loginWithMetaMask() {
@@ -56,19 +45,15 @@ async function loginWithMetaMask() {
                     hideProfileUI();
                     document.getElementById("loginResponse").innerHTML = `Welcome: ${profile.firstName} ${profile.lastName}<br />Address: ${profile.address}`;
                 }
-
-                //alert(`Logged in with token: ${token}`);
             } else {
-                document.getElementById("loginResponse").innerText = "Login failed. Please try again."
-                //alert('Login failed. Please try again.');
+                document.getElementById("loginResponse").innerText = "Login failed. Please try again.";
             }
         } else {
-            document.getElementById("loginResponse").innerText = "MetaMask is not installed or not connected."
-            //alert('MetaMask is not installed or not connected.');
+            document.getElementById("loginResponse").innerText = "MetaMask is not installed or not connected.";
         }
     } catch (error) {
         console.error(error);
-        alert('An error occurred while logging in with MetaMask.');
+        document.getElementById("loginResponse").innerText = "An error occurred while logging in with MetaMask.";
     }
 }
 
@@ -150,6 +135,6 @@ function hideProfileUI() {
     // Get the div element by its ID
     const profileDiv = document.getElementById('profile');
 
-    // Change the display style to 'block' to make it visible
+    // Change the display style to 'none' to make it invisible
     profileDiv.style.display = 'none';
 }
