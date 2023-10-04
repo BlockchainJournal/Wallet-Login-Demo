@@ -28,7 +28,7 @@ The application's source code will be downloaded into a folder named `Wallet-Log
 **Step 1:** In a terminal window execute the following commands:
 
 ```bash
-cd ./SimpleWeb3Auth
+cd ./Wallet-Login-Demo
 ```
 
 ```bash
@@ -65,9 +65,9 @@ You'll see the following web page.
 
 ![Screenshot 2023-10-03 at 11 29 26 AM](https://github.com/reselbob/SimpleWeb3Auth/assets/1110569/c19ad37a-67f8-4b10-bf18-2ebc8f241652)
 
-**Step 3:** Click the button labeled `Sign` in the lower right of the MetaMask plugin to log in to the web site.
+**Step 3:** Click the button labeled `Sign` in the lower right of the MetaMask plugin to log in to the website.
 
-Clicking the `Sign` button will make it so that you'll be authenticated to the demonstration web site using MetaMask's validation mechanisms.
+Clicking the `Sign` button will make it so that you'll be authenticated to the demonstration website using MetaMask's validation mechanisms.
 
 # Declaring a profile
 
