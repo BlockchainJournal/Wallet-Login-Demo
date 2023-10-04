@@ -81,18 +81,6 @@ function generateRandomHexNonce(length) {
     return '0x' + hexNonce;
 }
 
-function readOnlyProfileUI() {
-    // After saving the data, make the textboxes readonly and grayed out
-    document.getElementById('firstName').readOnly = true;
-    document.getElementById('firstName').classList.add('readonly');
-
-    document.getElementById('lastName').readOnly = true;
-    document.getElementById('lastName').classList.add('readonly');
-
-    document.getElementById('email').readOnly = true;
-    document.getElementById('email').classList.add('readonly');
-}
-
 async function processProfileData() {
     // Access form data
     const formData = {
@@ -137,4 +125,16 @@ function hideProfileUI() {
 
     // Change the display style to 'none' to make it invisible
     profileDiv.style.display = 'none';
+}
+
+function readOnlyProfileUI() {
+    // After saving the data, make the textboxes readonly and grayed out
+    document.getElementById('firstName').readOnly = true;
+    document.getElementById('firstName').classList.add('readonly');
+
+    document.getElementById('lastName').readOnly = true;
+    document.getElementById('lastName').classList.add('readonly');
+
+    document.getElementById('email').readOnly = true;
+    document.getElementById('email').classList.add('readonly');
 }
