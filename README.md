@@ -20,7 +20,7 @@ In a terminal window execute the following command:
 git clone https://github.com/BlockchainJournal/Wallet-Login-Demo.git
 ```
 
-The application's source code will be downloaded into a folder named `SimpleWeb3Auth`.
+The application's source code will be downloaded into a folder named `Wallet-Login-Demo`.
 
 
 # Installing the application dependencies
@@ -71,7 +71,7 @@ Clicking the `Sign` button will make it so that you'll be authenticated to the d
 
 # Declaring a profile
 
-The first time you login to the demonstation application you will be asked to declare a profile by filling in the following form:
+The first time you login to the demonstration application you will be asked to declare a profile by filling in the following form:
 
 ![Screenshot 2023-10-03 at 11 29 57 AM](https://github.com/reselbob/SimpleWeb3Auth/assets/1110569/6fe5bdca-e7f7-4b51-9b7f-9f6db1003eab)
 
