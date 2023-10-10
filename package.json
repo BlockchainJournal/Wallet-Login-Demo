@@ -9,8 +9,8 @@
   "author": "Bob Reselman <bob.reselman@blockchainjournal.com>",
   "license": "MIT",
   "dependencies": {
+    "@metamask/eth-sig-util": "^7.0.0",
     "body-parser": "^1.20.2",
-    "eth-sig-util": "^3.0.1",
     "ethereumjs-util": "^7.1.5",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",

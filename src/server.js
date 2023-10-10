@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const sigUtil = require('eth-sig-util');
+const sigUtil = require('@metamask/eth-sig-util');
 const jwt = require('jsonwebtoken');
 const path = require('path'); // Required for file paths
 
@@ -12,15 +12,15 @@ const secretKey = 'w87LqcTUMeA7U8v@#yEEZX2KfH@G9mWxxx';
 
 // Mock user database (you should use a real database)
 const users = [];
-const profiles= [];
+const profiles = [];
 
 // Middleware to verify MetaMask signature
 function verifySignature(req, res, next) {
     const {address, signature, message} = req.body;
-
+    // extract the senderAddress from the submitted signature
     const senderAddress = sigUtil.recoverPersonalSignature({
         data: message,
-        sig: signature,
+        signature: signature,
     });
     if (senderAddress.toLowerCase() === address.toLowerCase()) {
         // store the user's address, if its not there already
@@ -46,7 +46,7 @@ app.post('/login', verifySignature, (req, res) => {
         // Check to see if the sender address is a known profile.
         let profile;
         const matchingProfile = profiles.find(obj => obj.address === senderAddress);
-        if(matchingProfile) profile = { firstName, lastName, email } = matchingProfile;
+        if (matchingProfile) profile = {firstName, lastName, email} = matchingProfile;
         return res.status(200).json({token, profile});
         //return res.json({ token });
     } else {
@@ -74,13 +74,14 @@ async function verifyJwtToken(req, res) {
     } catch (e) {
         return res.status(401).json({error: e.message});
     }
-        // Access decoded data (user information)
+    // Access decoded data (user information)
     const userData = decoded;
 
-        // Process the data as needed
+    // Process the data as needed
     console.log('Decoded User Data:', userData);
     return userData
 }
+
 // Route for handling MetaMask login
 app.post('/profile', async (req, res) => {
     const tokenData = await verifyJwtToken(req, res)
@@ -89,7 +90,7 @@ app.post('/profile', async (req, res) => {
 
     if (users.includes(tokenData.senderAddress.toLowerCase())) {
         const {firstName, lastName, email} = req.body;
-        if (!profiles.some(obj => obj.address === tokenData.senderAddress)){
+        if (!profiles.some(obj => obj.address === tokenData.senderAddress)) {
             profiles.push({
                 address: tokenData.senderAddress,
                 firstName,
@@ -97,8 +98,9 @@ app.post('/profile', async (req, res) => {
                 email
             })
             return res.status(200).json("ok");
-        }else{
-            return res.status(201).json("ok");;
+        } else {
+            return res.status(201).json("ok");
+            ;
         }
     } else {
         // User is not registered, you may choose to register them
