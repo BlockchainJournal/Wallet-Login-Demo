@@ -24,7 +24,7 @@ async function loginWithMetaMask() {
                 params: [message, address],
             });
 
-            // Send the Ethereum address and signature to the server
+            // Send the Ethereum address, signature and custom message to the server
             const response = await fetch('/login', {
                 method: 'POST',
                 headers: {
@@ -38,8 +38,9 @@ async function loginWithMetaMask() {
                 const {token, profile} = data;
                 setLoginToken(token);
                 setProfile(profile);
-
+                document.getElementById("loginButton").style.display = "none";
                 if (!profile) {
+                    document.getElementById("loginResponse").innerHTML = `Logged in. Please enter your profile information`;
                     showProfileUI();
                 } else {
                     hideProfileUI();
