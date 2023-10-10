@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const ethUtil = require('ethereumjs-util');
 const sigUtil = require('eth-sig-util');
 const jwt = require('jsonwebtoken');
 const path = require('path'); // Required for file paths
@@ -24,13 +23,12 @@ function verifySignature(req, res, next) {
         sig: signature,
     });
     if (senderAddress.toLowerCase() === address.toLowerCase()) {
-        // add the user to the DB, if its not there already
+        // store the user's address, if its not there already
         if (!users.includes(senderAddress.toLowerCase())) {
-            // Add the user 'Bob' to the array.
+            // Add the user's address to the array simulating a DB.
             users.push(senderAddress.toLowerCase());
         }
-
-        // Signature is valid
+        // Assert that the signature is valid
         req.senderAddress = senderAddress;
         return next();
     } else {
@@ -41,9 +39,7 @@ function verifySignature(req, res, next) {
 // Route for handling MetaMask login
 app.post('/login', verifySignature, (req, res) => {
     const {senderAddress} = req;
-
     // Check if the user is already registered
-
     if (users.includes(senderAddress.toLowerCase())) {
         // User exists, generate a JWT token (you should use a real authentication library)
         const token = generateAuthToken(senderAddress);

@@ -11,7 +11,9 @@ async function loginWithMetaMask() {
     try {
         // Check if MetaMask is installed and connected
         if (typeof window.ethereum !== 'undefined') {
+            // retrieve the accounts known to the MetaMask plugin ...
             const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+            // ... and choose the first one
             const address = accounts[0];
 
             const greeting = "You are about to login to a really cool site.";
