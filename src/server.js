@@ -85,9 +85,7 @@ async function verifyJwtToken(req, res) {
 // Route for handling MetaMask login
 app.post('/profile', async (req, res) => {
     const tokenData = await verifyJwtToken(req, res)
-
     // Check if the user is already registered
-
     if (users.includes(tokenData.senderAddress.toLowerCase())) {
         const {firstName, lastName, email} = req.body;
         if (!profiles.some(obj => obj.address === tokenData.senderAddress)) {
@@ -100,7 +98,6 @@ app.post('/profile', async (req, res) => {
             return res.status(200).json("ok");
         } else {
             return res.status(201).json("ok");
-            ;
         }
     } else {
         // User is not registered, you may choose to register them
