@@ -37,12 +37,12 @@ async function loginWithMetaMask() {
 
             if (response.ok) {
                 const data = await response.json();
-                const {token, profile} = data;
+                const {token, address, profile} = data;
                 setLoginToken(token);
                 setProfile(profile);
                 document.getElementById("loginButton").style.display = "none";
                 if (!profile) {
-                    document.getElementById("loginResponse").innerHTML = `Logged in. Please enter your profile information`;
+                    document.getElementById("loginResponse").innerHTML = `Logged in at address ${address}.<br />Please enter your profile information:`;
                     showProfileUI();
                 } else {
                     hideProfileUI();

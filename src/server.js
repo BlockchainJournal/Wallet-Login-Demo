@@ -2,8 +2,9 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const sigUtil = require('@metamask/eth-sig-util');
+const ethUtil = require('ethereumjs-util');
 const jwt = require('jsonwebtoken');
-const path = require('path'); // Required for file paths
+const path = require('path');
 
 app.use(bodyParser.json());
 
@@ -14,10 +15,42 @@ const secretKey = 'w87LqcTUMeA7U8v@#yEEZX2KfH@G9mWxxx';
 const users = [];
 const profiles = [];
 
+/**
+ * This is a courtesy function that demonstrates
+ * how to extract a sender's address from a public
+ * key
+ * @param hexPublicKey, the public key as a hexadecimal string
+ * @returns {string} the sender's address as a hexadecimal string
+ */
+const getAddress = (hexPublicKey) => {
+    // Remove the '0x' prefix
+    const publicKeyWithoutPrefix = hexPublicKey.slice(2);
+    // Split the public key into X and Y coordinates (each coordinate is 64 characters)
+    const xCoord = publicKeyWithoutPrefix.slice(0, 64);
+    const yCoord = publicKeyWithoutPrefix.slice(64);
+    // Concatenate the X and Y coordinates
+    const concatenatedCoords = xCoord + yCoord;
+    // Convert the concatenation to a buffer
+    const bufferCoords = Buffer.from(concatenatedCoords, 'hex');
+    // Hash the concatenated coordinates using Keccak-256
+    const hashedCoords = ethUtil.keccak(bufferCoords, 256);
+    // Convert the result to a hexadecimal string
+    const hexString = '0x' + hashedCoords.toString('hex');
+    // Slice off the last 40 hexadecimal characters which is the address
+    return hexString.slice(-40);
+}
+
 // Middleware to verify MetaMask signature
 function verifySignature(req, res, next) {
     const {address, signature, message} = req.body;
-    // extract the senderAddress from the submitted signature
+    const publicKey = sigUtil.extractPublicKey({
+        data: message,
+        signature: signature,
+    })
+    // This is called for demonstration purposes
+    const extractedAddress = getAddress(publicKey);
+    console.log(`The sender's address is: ${extractedAddress}`);
+
     const senderAddress = sigUtil.recoverPersonalSignature({
         data: message,
         signature: signature,
@@ -47,7 +80,7 @@ app.post('/login', verifySignature, (req, res) => {
         let profile;
         const matchingProfile = profiles.find(obj => obj.address === senderAddress);
         if (matchingProfile) profile = {firstName, lastName, email} = matchingProfile;
-        return res.status(200).json({token, profile});
+        return res.status(200).json({token, address: senderAddress, profile});
         //return res.json({ token });
     } else {
         // User is not registered, you may choose to register them
