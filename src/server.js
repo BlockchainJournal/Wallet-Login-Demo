@@ -16,6 +16,16 @@ const users = [];
 const profiles = [];
 
 /**
+ * Helper function that generates the a JWT token
+ * @param senderAddress, user's account address
+ * @returns {string}
+ */
+function generateAuthToken(senderAddress) {
+    const token = jwt.sign({senderAddress}, secretKey, {expiresIn: '1h'});
+    return `Bearer ${token}`;
+}
+
+/**
  * This is a courtesy function that demonstrates
  * how to extract a sender's address from a public
  * key
@@ -40,7 +50,45 @@ const getAddress = (hexPublicKey) => {
     return hexString.slice(-40);
 }
 
-// Middleware to verify MetaMask signature
+/**
+ *  Verifies JWT token submitted in req.headers.authorization
+ * @param req, HTTP Request in play
+ * @param res, HTTP Response that will be emitted by app
+ * @returns {Promise<userDate>}
+ */
+async function verifyJwtToken(req, res) {
+    const authorizationHeader = req.headers.authorization;
+
+    if (!authorizationHeader) return res.status(401).json({error: 'Authorization header missing'});
+
+    const tokenParts = authorizationHeader.split(' ');
+
+    if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+        return res.status(401).json({error: 'Invalid Authorization header format'});
+    }
+
+    const jwtToken = tokenParts[1];
+    let decoded;
+    try {
+        decoded = await jwt.verify(jwtToken, secretKey);
+    } catch (e) {
+        return res.status(401).json({error: e.message});
+    }
+    // Access decoded data (user information)
+    const userData = decoded;
+
+    // Process the data as needed
+    console.log('Decoded User Data:', userData);
+    return userData
+}
+
+/**
+ * Middleware to verify MetaMask signature
+ * @param req, HTTP Request in play
+ * @param res, HTTP Response that will be emitted by app
+ * @param next, the next middeleware function to call
+ * @returns {*} calls next() upon success, raises a 401 on failure
+ */
 function verifySignature(req, res, next) {
     const {address, signature, message} = req.body;
     const publicKey = sigUtil.extractPublicKey({
@@ -69,7 +117,9 @@ function verifySignature(req, res, next) {
     }
 }
 
-// Route for handling MetaMask login
+/**
+ * Route for handling MetaMask login
+ */
 app.post('/login', verifySignature, (req, res) => {
     const {senderAddress} = req;
     // Check if the user is already registered
@@ -88,34 +138,9 @@ app.post('/login', verifySignature, (req, res) => {
     }
 });
 
-
-async function verifyJwtToken(req, res) {
-    const authorizationHeader = req.headers.authorization;
-
-    if (!authorizationHeader) return res.status(401).json({error: 'Authorization header missing'});
-
-    const tokenParts = authorizationHeader.split(' ');
-
-    if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
-        return res.status(401).json({error: 'Invalid Authorization header format'});
-    }
-
-    const jwtToken = tokenParts[1];
-    let decoded;
-    try {
-        decoded = await jwt.verify(jwtToken, secretKey);
-    } catch (e) {
-        return res.status(401).json({error: e.message});
-    }
-    // Access decoded data (user information)
-    const userData = decoded;
-
-    // Process the data as needed
-    console.log('Decoded User Data:', userData);
-    return userData
-}
-
-// Route for handling MetaMask login
+/**
+ * Route for handling MetaMask login
+ */
 app.post('/profile', async (req, res) => {
     const tokenData = await verifyJwtToken(req, res)
     // Check if the user is already registered
@@ -137,12 +162,6 @@ app.post('/profile', async (req, res) => {
         return res.status(401).json({error: 'Invalid authentication'});
     }
 });
-
-// Helper function to generate a JWT token (replace with your own token generation logic)
-function generateAuthToken(senderAddress) {
-    const token = jwt.sign({senderAddress}, secretKey, {expiresIn: '1h'});
-    return `Bearer ${token}`;
-}
 
 // Serve static files from the 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
